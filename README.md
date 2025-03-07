@@ -1,66 +1,114 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel API Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a Laravel-based RESTful API that manages users, projects, and timesheets. It includes authentication using Laravel Sanctum, relationship management, and filtering for fetching data.
 
-## About Laravel
+## Features
+- User authentication (register, login, logout) with Laravel Sanctum
+- CRUD operations for Users, Projects, and Timesheets
+- Relationship handling (Users can be assigned to multiple projects, and users can log timesheets for projects)
+- API protection (only authenticated users can access endpoints)
+- Filtering support in the "Read All Records" endpoint
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation & Setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prerequisites
+Ensure you have the following installed:
+- PHP (>= 8.0)
+- Composer
+- MySQL
+- Laravel (>= 9.0)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Step 1: Install Dependencies
+```sh
+composer install
+```
 
-## Learning Laravel
+### Step 2: Set Up Environment Variables
+Copy the example `.env` file:
+```sh
+cp .env.example .env
+```
+Then update the following database credentials in `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_user
+DB_PASSWORD=your_database_password
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Step 3: Generate Application Key
+```sh
+php artisan key:generate
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Step 4: Run Database Migrations
+```sh
+php artisan migrate
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Step 5: Seed the Database (Optional)
+```sh
+php artisan db:seed
+```
 
-## Laravel Sponsors
+### Step 6: Install Laravel Sanctum & Run Migrations
+```sh
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan migrate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Step 6: Serve the Application
+```sh
+php artisan serve
+```
+The API will be available at: `http://127.0.0.1:8000`
 
-### Premium Partners
+## API Endpoints
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Authentication
+- **Register:** `POST /api/register`
+- **Login:** `POST /api/login`
+- **Logout:** `POST /api/logout` (Requires Auth)
 
-## Contributing
+### Users
+- **Create User:** `POST /api/users`
+- **Get All Users:** `GET /api/users`
+- **Get User by ID:** `GET /api/users/{id}`
+- **Update User:** `POST /api/users/update`
+- **Delete User:** `POST /api/users/delete`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Projects
+- **Create Project:** `POST /api/projects`
+- **Get All Projects:** `GET /api/projects`
+- **Get Project by ID:** `GET /api/projects/{id}`
+- **Update Project:** `POST /api/projects/update`
+- **Delete Project:** `POST /api/projects/delete`
 
-## Code of Conduct
+### Timesheets
+- **Create Timesheet:** `POST /api/timesheets`
+- **Get All Timesheets:** `GET /api/timesheets`
+- **Get Timesheet by ID:** `GET /api/timesheets/{id}`
+- **Update Timesheet:** `POST /api/timesheets/update`
+- **Delete Timesheet:** `POST /api/timesheets/delete`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Filtering
+Filtering is available in "Read All Records" endpoints. Example:
+```sh
+GET /api/users?first_name=John&gender=male
+GET /api/projects?status=active
+GET /api/timesheets?user_id=1&project_id=2
+```
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Authentication
+After logging in, include the token in the Authorization header for protected routes:
+```sh
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
 
 ## License
+This project is licensed under the MIT License.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+Made with ❤️ by Chathu Abeywickrama
